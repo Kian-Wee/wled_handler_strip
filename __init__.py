@@ -12,7 +12,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-WLED_IPS=['http://192.168.1.224', 'http://192.168.1.205']
+# WLED_IPS=['http://192.168.1.224', 'http://192.168.1.205']
+WLED_IPS=['http://192.168.1.224']
 
 
 #Query for the number of leds on a particular strip
@@ -94,12 +95,11 @@ def wledled_on(strip, color=ColorVal.WHITE, pattern=ColorPattern.SOLID, offset=0
     if pattern == ColorPattern.SOLID or pattern == None:
         for ip in WLED_IPS:
             try:
-                print(str(ip)+'/json/state')
-                print('{"on":true,"v":true,"seg":[{"start":0, "stop":'+ str(wled_num_of_leds(ip)) +', "grp":0, "spc":0, "fx":0, "col":[[' + str(r) + ',' + str(g) +',' + str(b) + ']],"bri":255}]}')
-                req = requests.post(str(ip)+'/json/state', '{"on":true,"v":true,"seg":[{"start":0, "stop":'+ str(wled_num_of_leds(ip)) +', "grp":0, "spc":0, "fx":0, "col":[[' + str(r) + ',' + str(g) +',' + str(b) + ']],"bri":255}]}')
-                print(req)
+                print(WLED_IPS)
+                print(str(ip)+'/json/state', '{"on":true,"v":true,"seg":[{"start":0, "stop":'+ str(wled_num_of_leds(ip)) +', "grp":1, "spc":0, "fx":0, "col":[[' + str(r) + ',' + str(g) +',' + str(b) + ']],"bri":255}]}')
+                req = requests.post(str(ip)+'/json/state', '{"on":true,"v":true,"seg":[{"start":0, "stop":'+ str(wled_num_of_leds(ip)) +', "grp":1, "spc":0, "fx":0, "col":[[' + str(r) + ',' + str(g) +',' + str(b) + ']],"bri":255}]}')
             except:
-                print("Unable to contact server")
+                print("Unable to contact server", ip)
     else:
         patternlength = sum(pattern)
         wled_off=patternlength-pattern[0]
@@ -107,14 +107,14 @@ def wledled_on(strip, color=ColorVal.WHITE, pattern=ColorPattern.SOLID, offset=0
             try:
                 req = requests.post(str(ip)+'/json/state', '{"on":true,"v":true,"seg":[{"fx":0, "col":[[' + str(r) + ',' + str(g) +',' + str(b) + ']],"bri":255, "grp":' + str(pattern[0]) + ', spc:' +  str(wled_off) + '}]}')
             except:
-                print("Unable to contact server")
+                print("Unable to contact server", ip)
 
 def wledled_off(strip):
     for ip in WLED_IPS:
         try:
             req = requests.post(str(ip)+'/json/state', '{"on":false,"v":true}')
         except:
-            print("Unable to contact server")
+            print("Unable to contact server", ip)
 
 #TODO
 def wledchase(args):
@@ -141,26 +141,26 @@ def wledchase(args):
     r,g,b=unpack_rgb(a['color'])
     for ip in WLED_IPS:
         try:
-            req = requests.post(str(ip)+'/json/state', '{"on":true,"v":true,"seg":[{"start":0, "stop":'+ str(wled_num_of_leds(ip)) +', "grp":0, "spc":0, "fx":37, "col":[[' + str(r) + ',' + str(g) +',' + str(b) + ']],"bri":255}]}')
+            req = requests.post(str(ip)+'/json/state', '{"on":true,"v":true,"seg":[{"start":0, "stop":'+ str(wled_num_of_leds(ip)) +', "grp":1, "spc":0, "fx":37, "col":[[' + str(r) + ',' + str(g) +',' + str(b) + ']],"bri":255}]}')
         except:
-            print("Unable to contact server")
+            print("Unable to contact server", ip)
 
 
 def wledcolorloop(args):
     """Draw rainbow that fades across all pixels at once."""
     for ip in WLED_IPS:
         try:
-            req = requests.post(str(ip)+'/json/state', '{"on":true,"v":true,"seg":[{"start":0, "stop":'+ str(wled_num_of_leds(ip)) +', "fx":8 ,"bri":255}]}')
+            req = requests.post(str(ip)+'/json/state', '{"on":true,"v":true,"seg":[{"start":0, "stop":'+ str(wled_num_of_leds(ip)) +', "grp":1, "spc":0, "fx":8 ,"bri":255}]}')
         except:
-            print("Unable to contact server")
+            print("Unable to contact server", ip)
 
 def wledpalette(args):
     """Draw rainbow that uniformly distributes itself across all pixels."""
     for ip in WLED_IPS:
         try:
-            req = requests.post(str(ip)+'/json/state', '{"on":true,"v":true,"seg":[{"start":0, "stop":'+ str(wled_num_of_leds(ip)) +', "fx":65 ,"bri":255}]}')
+            req = requests.post(str(ip)+'/json/state', '{"on":true,"v":true,"seg":[{"start":0, "stop":'+ str(wled_num_of_leds(ip)) +', "grp":1, "spc":0, "fx":65 ,"bri":255}]}')
         except:
-            print("Unable to contact server")
+            print("Unable to contact server", ip)
 
 def wledshowColor(args):
     if 'strip' in args:
@@ -202,9 +202,9 @@ def wledcolorWipe(args):
     r,g,b = unpack_rgb(a['color'])
     for ip in WLED_IPS:
         try:
-            req = requests.post(str(ip)+'/json/state', '{"on":true,"v":true,"seg":[{"start":0, "stop":'+ str(wled_num_of_leds(ip)) +', "grp":0, "spc":0, "fx":3, "col":[[' + str(r) + ',' + str(g) +',' + str(b) + ']],"bri":255}]}')
+            req = requests.post(str(ip)+'/json/state', '{"on":true,"v":true,"seg":[{"start":0, "stop":'+ str(wled_num_of_leds(ip)) +', "grp":1, "spc":0, "fx":3, "col":[[' + str(r) + ',' + str(g) +',' + str(b) + ']],"bri":255}]}')
         except:
-            print("Unable to contact server")
+            print("Unable to contact server", ip)
 
 def wledfade(args):
     if 'strip' in args:
@@ -226,9 +226,9 @@ def wledfade(args):
     r,g,b = unpack_rgb(a['color'])
     for ip in WLED_IPS:
         try:
-            req = requests.post(str(ip)+'/json/state', '{"on":true,"v":true,"seg":[{"start":0, "stop":'+ str(wled_num_of_leds(ip)) +', "grp":0, "spc":0, "fx":12, "col":[[' + str(r) + ',' + str(g) +',' + str(b) + ']],"bri":255}]}')
+            req = requests.post(str(ip)+'/json/state', '{"on":true,"v":true,"seg":[{"start":0, "stop":'+ str(wled_num_of_leds(ip)) +', "grp":1, "spc":0, "fx":12, "col":[[' + str(r) + ',' + str(g) +',' + str(b) + ']],"bri":255}]}')
         except:
-            print("Unable to contact server")
+            print("Unable to contact server", ip)
 
     # led_off(strip)
 
@@ -283,9 +283,9 @@ def wledsparkle(args):
     r,g,b = unpack_rgb(a['color'])
     for ip in WLED_IPS:
         try:
-            req = requests.post(str(ip)+'/json/state', '{"on":true,"v":true,"seg":[{"start":0, "stop":'+ str(wled_num_of_leds(ip)) +', "grp":0, "spc":0, "fx":95, "col":[[' + str(r) + ',' + str(g) +',' + str(b) + ']],"bri":255}]}')
+            req = requests.post(str(ip)+'/json/state', '{"on":true,"v":true,"seg":[{"start":0, "stop":'+ str(wled_num_of_leds(ip)) +', "grp":1, "spc":0, "fx":95, "col":[[' + str(r) + ',' + str(g) +',' + str(b) + ']],"bri":255}]}')
         except:
-            print("Unable to contact server")
+            print("Unable to contact server", ip)
     # gevent.idle() # never time-critical
 
     # # decay time = log(decay cutoff=10 / max brightness=256) / log(decay rate)
@@ -330,9 +330,9 @@ def wledmeteor(args):
     r,g,b = unpack_rgb(a['color'])
     for ip in WLED_IPS:
         try:
-            req = requests.post(str(ip)+'/json/state', '{"on":true,"v":true,"seg":[{"start":0, "stop":'+ str(wled_num_of_leds(ip)) +', "grp":0, "spc":0, "fx":76, "col":[[' + str(r) + ',' + str(g) +',' + str(b) + ']],"bri":255}]}')
+            req = requests.post(str(ip)+'/json/state', '{"on":true,"v":true,"seg":[{"start":0, "stop":'+ str(wled_num_of_leds(ip)) +', "grp":1, "spc":0, "fx":76, "col":[[' + str(r) + ',' + str(g) +',' + str(b) + ']],"bri":255}]}')
         except:
-            print("Unable to contact server")
+            print("Unable to contact server", ip)
     # gevent.idle() # never time-critical
 
     # led_off(strip)
@@ -390,9 +390,9 @@ def wledlarsonScanner(args):
     r,g,b = unpack_rgb(a['color'])
     for ip in WLED_IPS:
         try:
-            req = requests.post(str(ip)+'/json/state', '{"on":true,"v":true,"seg":[{"start":0, "stop":'+ str(wled_num_of_leds(ip)) +', "grp":0, "spc":0, "fx":60, "col":[[' + str(r) + ',' + str(g) +',' + str(b) + ']],"bri":255}]}')
+            req = requests.post(str(ip)+'/json/state', '{"on":true,"v":true,"seg":[{"start":0, "stop":'+ str(wled_num_of_leds(ip)) +', "grp":1, "spc":0, "fx":60, "col":[[' + str(r) + ',' + str(g) +',' + str(b) + ']],"bri":255}]}')
         except:
-            print("Unable to contact server")
+            print("Unable to contact server", ip)
 
     # a['speedDelay'] = a['speedDelay']/float(strip.numPixels()) # scale effect by strip length
 
@@ -697,6 +697,7 @@ class wled_manager():
 
     # Needs args else database will be empty ?
     def saveip(self,args):
+        global WLED_IPS
         WLED_IPS = str(self._rhapi.db.option('wled_ip', None)).split()
         print("Updated WLED IP: " + str(WLED_IPS))
 
